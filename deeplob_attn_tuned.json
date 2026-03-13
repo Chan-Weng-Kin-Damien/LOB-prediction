@@ -1,0 +1,5 @@
+{
+  "onnx_path": "deeplob_attn_tuned.onnx",
+  "context_len": 128,
+  "raw_dim": 32
+}
