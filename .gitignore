@@ -1,0 +1,41 @@
+# Competition data. Not redistributable; see README.
+datasets/
+*.parquet
+wnn_predictorium_starterpack.zip
+
+# Materialised corpus (1.6 GB, rebuilt by scripts/materialise.py)
+*.npy
+
+# Saved prediction dumps (artifacts/preds_*.npz are 30-60 MB each)
+*.npz
+
+# Training checkpoints
+*.pt
+*.pth
+*.pkl
+
+# Virtual environments
+env/
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+__MACOSX/
+._*
+
+# Editor
+.vscode/
+.idea/
+
+# Submission archives (rebuilt from the submission directories)
+submission_*.zip
+
+# Local run logs
+*.log

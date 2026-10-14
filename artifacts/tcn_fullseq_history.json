@@ -1,0 +1,39 @@
+{
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 1.528425984476742,
+      "t0": 0.3617804548845435,
+      "t1": 0.17281625149241506,
+      "weighted_pearson": 0.2672983531884793
+    },
+    {
+      "epoch": 2,
+      "loss": 1.4737980255955143,
+      "t0": 0.37369594418405866,
+      "t1": 0.1817597037234134,
+      "weighted_pearson": 0.277727823953736
+    }
+  ],
+  "best": 0.277727823953736,
+  "args": {
+    "corpus": "/Users/damien/.cache/lob-prediction/corpus",
+    "out": "/Users/damien/Library/CloudStorage/OneDrive-UniversityofEdinburgh/2526/LOB prediction/competition_package/artifacts",
+    "tag": "fullseq",
+    "epochs": 2,
+    "batch_size": 64,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "alpha": 0.75,
+    "beta": 0.3,
+    "hidden_dim": 48,
+    "dilations": "1,2,4,8,16,32",
+    "dropout": 0.05,
+    "context_len": 128,
+    "seed": 42,
+    "device": null,
+    "resume": null,
+    "eval_every": 1,
+    "skip_gate": false
+  }
+}

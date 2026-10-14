@@ -1,37 +1,45 @@
-# Submission: Safe 3-Model Ensemble
+# Competition submission: three-model blend
 
-This is a **safe, production-ready submission** for the Wunder Challenge (LOB Prediction). It implements a **weighted ensemble** of three pre-trained ONNX models, tuned for robustness and generalization.
+The entry scored during the Wunder Fund RNN Challenge (417th of 5,062). Kept
+here unchanged for reference; `../submission_v2/` is the later revision.
 
-## 📋 Models Included
+## Contents
 
-1. **Baseline GRU** (`baseline.onnx`): A simple recurrent model providing stable baseline predictions.
-2. **DeepLOB Attention** (`deeplob_attn_tuned.onnx`): CNN + GRU + attention architecture, optimized for capturing complex LOB patterns.
-3. **Improved TCN** (`improved_tcn.onnx`): Temporal Convolutional Network with causal convolutions for sequence modeling.
+| file | role |
+|---|---|
+| `baseline.onnx` | GRU baseline supplied in the organisers' starter pack, context 100 |
+| `deeplob_attn_tuned.onnx` | CNN with inception-residual blocks, GRU and additive attention, context 128 |
+| `improved_tcn.onnx` | Causal TCN, dilations 1-32, context 128 |
+| `solution.py` | Streaming wrapper and blend |
 
-## 🧮 Ensemble Strategy
+## Blend
 
-- **Blend Weights** (tuned on validation folds):
-  - t0: 89.15% Baseline + 10.85% TCN
-  - t1: 65.82% Baseline + 34.18% DeepLOB Attention
-- **Context Length**: 128 timesteps for DeepLOB and TCN; 100 for Baseline.
-- **Inference**: Models run in parallel; predictions are weighted and summed.
+Weights are per target and sum to one within each:
 
-## 🚀 Usage
+| target | baseline | DeepLOB attention | TCN |
+|---|---|---|---|
+| t0 | 0.8915 | 0 | 0.1085 |
+| t1 | 0.6582 | 0.3418 | 0 |
 
-1. Ensure `utils.py` is in the parent directory (for `DataPoint` class).
-2. Run `python solution.py` to test on validation data (requires `../datasets/valid.parquet`).
-3. For submission, zip this folder and submit as `submission.zip`.
+Context length is 128 for the DeepLOB and TCN models and 100 for the baseline.
 
-## 📊 Performance Notes
+## Measured performance
 
-- Designed for **high reliability** over peak performance.
-- Weights optimized to balance bias-variance on cross-validation.
-- No external dependencies beyond ONNX Runtime and NumPy.
+On the 544-sequence sealed holdout described in `../README.md`, this blend scores
+0.2590 mean weighted Pearson correlation, against 0.2482 for the supplied
+baseline alone and 0.2663 for the revised submission.
 
-## 🛠️ Technical Details
+The three models run sequentially in a single thread, each maintaining its own
+history buffer. Per predicted tick the blend costs about 1,085 us on an idle
+Apple M3. `../submission_v2/` shares one buffer across models instead.
 
-- **ONNX Runtime**: CPU-optimized with single-threaded execution.
-- **Data Handling**: Maintains per-sequence state; pads short histories with zeros.
-- **Output**: Returns `np.ndarray` of shape `(2,)` for t0/t1 predictions, or `None` if no prediction needed.
+## Notes
 
-This ensemble prioritizes **consistency** and **interpretability**, making it a solid choice for competition submissions.
+- Each model keeps per-sequence state and resets when `seq_ix` changes.
+- Histories shorter than the context length are zero-padded on the left, so the
+  newest tick is always the last row. This affects only the first 28 scored ticks
+  of a sequence for the context-128 models.
+- The single-threaded ONNX Runtime session settings and the rolling-window
+  pattern come from the organisers' starter pack.
+- `utils.py` from the starter pack must be importable from the parent directory;
+  it is not redistributed here.

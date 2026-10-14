@@ -1,0 +1,5 @@
+{
+  "onnx_path": "tcn_s3.onnx",
+  "context_len": 128,
+  "raw_dim": 32
+}
